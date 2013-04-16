@@ -55,7 +55,7 @@ public class Sidebar extends ViewGroup{
 		// TODO figure this block out
 		public void onAnimationEnd(Animation animation) { //**
 			iContent.clearAnimation();
-// TODO            mOpened = !mOpened;
+            opened = !opened;
             requestLayout();
             if (mListener != null) {
                 mListener.onSidebarOpened();
@@ -87,7 +87,7 @@ public class Sidebar extends ViewGroup{
 		public void onAnimationEnd(Animation animation) {
 			iContent.clearAnimation();
             iSidebar.setVisibility(View.INVISIBLE); //hides the sidebar when it is closed
-//     TODO       mOpened = !mOpened;
+            opened = !opened;
             requestLayout();
             if (mListener != null) {
                 mListener.onSidebarClosed();
