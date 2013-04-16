@@ -40,47 +40,67 @@ public class Sidebar extends ViewGroup{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
 	//here be dragons, and classes to implement
 	class OpenListener implements Animation.AnimationListener {
-
+		View iSidebar;
+        View iContent;
+        
+        OpenListener(View sidebar, View content) {
+            iSidebar = sidebar; //** sets local variables to those passed in
+            iContent = content;
+        }
 		@Override
-		public void onAnimationEnd(Animation animation) {
-			// TODO Auto-generated method stub
-			
+		// TODO figure this block out
+		public void onAnimationEnd(Animation animation) { //**
+			iContent.clearAnimation();
+// TODO            mOpened = !mOpened;
+            requestLayout();
+            if (mListener != null) {
+                mListener.onSidebarOpened();
+            }			
 		}
 
 		@Override
 		public void onAnimationRepeat(Animation animation) {
-			// TODO Auto-generated method stub
-			
-		}
+		} //do nothing
 
 		@Override
 		public void onAnimationStart(Animation animation) {
-			// TODO Auto-generated method stub
-			
+            iSidebar.setVisibility(View.VISIBLE); //** sets the sidebar to be visible			
 		}
 	}
 	
+	
+	
     class CloseListener implements Animation.AnimationListener {
-
+    	View iSidebar;
+        View iContent;
+        
+        CloseListener(View sidebar, View content) {
+            iSidebar = sidebar;
+            iContent = content;
+        }
+        
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			// TODO Auto-generated method stub
-			
+			iContent.clearAnimation();
+            iSidebar.setVisibility(View.INVISIBLE); //hides the sidebar when it is closed
+//     TODO       mOpened = !mOpened;
+            requestLayout();
+            if (mListener != null) {
+                mListener.onSidebarClosed();
+            }			
 		}
 
 		@Override
 		public void onAnimationRepeat(Animation animation) {
-			// TODO Auto-generated method stub
-			
-		}
+		} //do nothing
 
 		@Override
 		public void onAnimationStart(Animation animation) {
-			// TODO Auto-generated method stub
-			
-		}
+		} //do nothing
 
 	}
     
