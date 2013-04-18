@@ -22,24 +22,81 @@ public class Sidebar extends ViewGroup{
     protected View theContent;
     protected int sidebarWidth = 150; //default value which is rewritten later
     
-    protected Animation mAnimation;
-    protected OpenListener    mOpenListener;
-    protected CloseListener   mCloseListener;
-    protected Listener mListener;
+    protected Animation anAnimation;
+    protected OpenListener    anOpenListener;
+    protected CloseListener   aCloseListener;
+    protected Listener theListener;
 
-    protected boolean mPressed = false;
+    protected boolean isPressed = false;
 
+// TODO why for weird constructor setup?
+    public Sidebar(Context context) { //** for constructors, I honestly don't know why they are done like this
+        this(context, null); //one calls the other, but then can only pass null data, I assume something later
+    } //needs an AttributeSet argument
 
-	public Sidebar(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
-	}
+    public Sidebar(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+    
+
+    @Override
+    public void onFinishInflate() { //** sets views on inflate, throws errors if the view is not defined
+        super.onFinishInflate();
+        theSidebar = findViewById(R.id.animation_layout_sidebar);
+        theContent = findViewById(R.id.animation_layout_content);
+
+        if (theSidebar == null) {
+            throw new NullPointerException("no view id = animation_sidebar");
+        }
+
+        if (theContent == null) {
+            throw new NullPointerException("no view id = animation_content");
+        }
+
+        anOpenListener = new OpenListener(theSidebar, theContent); //listeners for the sidebar
+        aCloseListener = new CloseListener(theSidebar, theContent);
+    }
+    
+    public void setListener(Listener l) {
+        theListener = l; //sets the last listener for the sidebar
+    }
 
 	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void onLayout(boolean changed, int l, int t, int r, int b) { //**
+		int sidebarLeft = l;
+        if (!placeLeft) {
+            sidebarLeft = r - sidebarWidth; //places on the right
+        }
+        theSidebar.layout(sidebarLeft, 0, sidebarLeft + sidebarWidth, 0 + theSidebar.getMeasuredHeight()); //places on the right
+
+        if (opened) {
+            if (placeLeft) { //places the sidebar when it has been opened to be shown on the left
+                theContent.layout(l + sidebarWidth, 0, r + sidebarWidth, b);
+            } else  { //same but right
+                theContent.layout(l - sidebarWidth, 0, r - sidebarWidth, b);
+            }
+        } else {
+            theContent.layout(l, 0, r, b);
+        }	
+    }
+	
+	@Override
+    public void onMeasure(int w, int h) { //** This and the next method are for setting the size of the views
+        super.onMeasure(w, h); 
+        super.measureChildren(w, h);
+        sidebarWidth = theSidebar.getMeasuredWidth(); //sets width
+    }
+
+    @Override
+    protected void measureChild(View child, int parentWidth, int parentHeight) { //**
+        if (child == theSidebar) {
+            int mode = MeasureSpec.getMode(parentWidth);
+            int width = (int)(getMeasuredWidth() * 0.9); //can be up to 90%
+            super.measureChild(child, MeasureSpec.makeMeasureSpec(width, mode), parentHeight); //makes a measure specification which sets limits for the sidebar
+        } else {
+            super.measureChild(child, parentWidth, parentHeight);
+        }
+    }
 	
 	
 	//here be dragons, and classes to implement
@@ -52,13 +109,12 @@ public class Sidebar extends ViewGroup{
             iContent = content;
         }
 		@Override
-		// TODO figure this block out
 		public void onAnimationEnd(Animation animation) { //**
-			iContent.clearAnimation();
-            opened = !opened;
-            requestLayout();
-            if (mListener != null) {
-                mListener.onSidebarOpened();
+			iContent.clearAnimation(); //** cancels animations
+            opened = !opened; //** switches opened boolean to record state of sidebar
+            requestLayout(); //** invalidates the view so changes are shown
+            if (theListener != null) {
+                theListener.onSidebarOpened();
             }			
 		}
 
@@ -74,7 +130,7 @@ public class Sidebar extends ViewGroup{
 	
 	
 	
-    class CloseListener implements Animation.AnimationListener {
+    class CloseListener implements Animation.AnimationListener { //** mostly the opposite/same as OpenListner
     	View iSidebar;
         View iContent;
         
@@ -84,13 +140,13 @@ public class Sidebar extends ViewGroup{
         }
         
 		@Override
-		public void onAnimationEnd(Animation animation) {
+		public void onAnimationEnd(Animation animation) { 
 			iContent.clearAnimation();
-            iSidebar.setVisibility(View.INVISIBLE); //hides the sidebar when it is closed
+            iSidebar.setVisibility(View.INVISIBLE); //** hides the sidebar when it is closed
             opened = !opened;
             requestLayout();
-            if (mListener != null) {
-                mListener.onSidebarClosed();
+            if (theListener != null) {
+                theListener.onSidebarClosed();
             }			
 		}
 
