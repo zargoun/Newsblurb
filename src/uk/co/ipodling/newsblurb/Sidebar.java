@@ -60,6 +60,48 @@ public class Sidebar extends ViewGroup{
     public void setListener(Listener l) {
         theListener = l; //sets the last listener for the sidebar
     }
+    
+    public boolean isOpening() { //** returns boolean which gives the state of the sidebar
+        return opened;
+    }
+    
+    public void openSidebar() { //** these two use if logic to open the sidebar if it is requested and closed and vice versa
+        if (!opened) {
+            toggleSidebar();
+        }
+    }
+
+    public void closeSidebar() { //** see above
+        if (opened) {
+            toggleSidebar();
+        }
+    }
+    
+    public void toggleSidebar() {
+        if (theContent.getAnimation() != null) {
+            return; 
+        }
+
+        if (opened) {
+            if (placeLeft) { //** creates a new translate animation on the left to close
+                anAnimation = new TranslateAnimation(0, -sidebarWidth, 0, 0);
+            } else { //** creates a new translate animation on the right to close
+                anAnimation = new TranslateAnimation(0, sidebarWidth, 0, 0);
+            }
+            anAnimation.setAnimationListener(aCloseListener); //** sets the close listener
+        } else {
+            if (placeLeft) { //** new translate animation for sidebar open left
+                anAnimation = new TranslateAnimation(0, sidebarWidth, 0, 0);
+            } else { //** new translate animation for sidebar open right
+                anAnimation = new TranslateAnimation(0, -sidebarWidth, 0, 0);
+            } //** sets the opening listener
+            anAnimation.setAnimationListener(anOpenListener);
+        }
+        anAnimation.setDuration(DURATION); //** gives the animation a duration
+        anAnimation.setFillAfter(true); //** fills after transformation
+        anAnimation.setFillEnabled(true);
+        theContent.startAnimation(anAnimation); //** starts animation
+    }
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) { //**
