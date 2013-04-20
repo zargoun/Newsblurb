@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 public class NewsblurbPreferences {
-	private boolean firstTime;
     private SharedPreferences newsblurbPreferences;
     private static final String prefsPlace = NewsblurbPreferences.class.getSimpleName();;
 	private Editor newsblurbEditor;
@@ -20,7 +19,7 @@ public class NewsblurbPreferences {
         this.newsblurbEditor = newsblurbPreferences.edit();
         newsblurbEditor.clear(); //clear so as if first time run
         newsblurbEditor.commit();
-	}
+	}//
 //
 	public String getUser(){
 		String user = null;
@@ -54,17 +53,6 @@ public class NewsblurbPreferences {
 			isItThere = true;
 		}
 		return isItThere;
-	}
-	
-	public boolean getWasDone(){
-		boolean yes;
-		yes = newsblurbPreferences.getBoolean("wasDone", false);
-		return yes;
-	}
-	
-	public void setWasDone(boolean b){
-		newsblurbEditor.putBoolean("wasDone", b);
-        newsblurbEditor.commit();
 	}
 
 }

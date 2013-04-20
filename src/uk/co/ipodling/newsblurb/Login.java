@@ -32,26 +32,24 @@ public class Login extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
 			public void onClick(View v) {
-            	if (checkBox.isChecked()){
-        			if(userText.getText() != null && passText.getText() != null){
-        			newsblurbPreferences.setUser(userText.getText().toString());
-        			newsblurbPreferences.setPass(passText.getText().toString());
-        			// log into newsblur
-        			// if successful intent to move to main activity
-        			// if not toast error
-//        			Intent i = new Intent(getApplicationContext(), MainActivity.class);
-//        			startActivity(i);
-        			finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
-        			} else{
-        				Toast.makeText(Login.this, "Please enter username and password!", Toast.LENGTH_LONG).show();
+            	String user = userText.getText().toString();
+        		String pass = passText.getText().toString();
+        		if(user.matches("") || pass.matches("")){
+    				Toast.makeText(Login.this, "Please enter username and password!", Toast.LENGTH_LONG).show();
+        		} else{
+        			if (checkBox.isChecked()){
+        				newsblurbPreferences.setUser(userText.getText().toString());
+        				newsblurbPreferences.setPass(passText.getText().toString());
+        				// log into newsblur
+        				// if successful intent to move to main activity
+        				// if not toast error
+        				finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
+            			} else {
+        				// log in without saving passing
+        				// if successful intent to move to main activity
+        				// if not toast error
+        				finish();
         			}
-        		} else {
-        			// log in without saving passing
-        			// if successful intent to move to main activity
-        			// if not toast error
-//        			Intent i = new Intent(getApplicationContext(), MainActivity.class);
-//        			startActivity(i);
-        			finish();
         		}
             }
         });
