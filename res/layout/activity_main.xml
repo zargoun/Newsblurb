@@ -1,7 +1,37 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<uk.co.ipodling.newsblurb.Sidebar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/animation_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    >
+    <LinearLayout
+        android:id="@id/animation_layout_sidebar"
+        android:layout_width="200dip"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <ListView
+            android:id="@+id/sidebar_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
 
-</RelativeLayout>
+    <!-- To make LinearLayout clickable to trigger onContentTouchedWhenOpening()  -->
+    <LinearLayout
+        android:id="@id/animation_layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:clickable="true"
+        android:orientation="vertical"
+        >
+        <Button android:id="@+id/content_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sidebar"
+            android:onClick="onClickContentButton"
+            />
+    </LinearLayout>
+</uk.co.ipodling.newsblurb.Sidebar>
+
