@@ -2,6 +2,7 @@ package uk.co.ipodling.newsblurb;
 /*
  * Technically unneeded as shared prefs go between all activities but makes it look a bit nicer
  * and act a bit more elegantly.
+ * Is this going to work? Maybe...
  * */
 import android.app.Activity;
 import android.content.Context;
@@ -17,18 +18,31 @@ public class NewsblurbPreferences {
 	public NewsblurbPreferences(Context context) {
 		this.newsblurbPreferences = context.getSharedPreferences(prefsPlace, Activity.MODE_PRIVATE);
         this.newsblurbEditor = newsblurbPreferences.edit();
-        if(newsblurbPreferences.contains("firstTime") == false){
-            newsblurbEditor.putBoolean("firstTime", true);
-            newsblurbEditor.commit();
-        }
+	}
+
+	public String getUser(){
+		String user = null;
+		if (newsblurbPreferences.contains("user")){
+		user = newsblurbPreferences.getString("user", "");
+		}
+		return user;
 	}
 	
-	public boolean getFirstTimePref(){
-		return newsblurbPreferences.getBoolean("firstTime", false);
+	public String getPass(){ //obviously this needs encrypting down the road
+		String pass = null;
+		if (newsblurbPreferences.contains("pass")){
+		pass = newsblurbPreferences.getString("pass", "");
+		}
+		return pass;	
 	}
 	
-	public void setFirstTimePref(boolean set){
-		newsblurbEditor.putBoolean("firstTime", set);
+	public void setUser(String user){
+		newsblurbEditor.putString("user", user);
+        newsblurbEditor.commit();
+	}
+	
+	public void setPass(String pass){
+		newsblurbEditor.putString("pass", pass);
         newsblurbEditor.commit();
 	}
 
