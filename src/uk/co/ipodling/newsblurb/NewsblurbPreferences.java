@@ -18,13 +18,15 @@ public class NewsblurbPreferences {
 	public NewsblurbPreferences(Context context) {
 		this.newsblurbPreferences = context.getSharedPreferences(prefsPlace, Activity.MODE_PRIVATE);
         this.newsblurbEditor = newsblurbPreferences.edit();
+        newsblurbEditor.clear(); //clear so as if first time run
+        newsblurbEditor.commit();
 	}
-
+//
 	public String getUser(){
 		String user = null;
 		if (newsblurbPreferences.contains("user")){
 		user = newsblurbPreferences.getString("user", "");
-		}
+		} //
 		return user;
 	}
 	
@@ -52,6 +54,17 @@ public class NewsblurbPreferences {
 			isItThere = true;
 		}
 		return isItThere;
+	}
+	
+	public boolean getWasDone(){
+		boolean yes;
+		yes = newsblurbPreferences.getBoolean("wasDone", false);
+		return yes;
+	}
+	
+	public void setWasDone(boolean b){
+		newsblurbEditor.putBoolean("wasDone", b);
+        newsblurbEditor.commit();
 	}
 
 }

@@ -39,8 +39,9 @@ public class Login extends Activity {
         			// log into newsblur
         			// if successful intent to move to main activity
         			// if not toast error
-        			Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        			startActivity(i);
+//        			Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//        			startActivity(i);
+        			finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
         			} else{
         				Toast.makeText(Login.this, "Please enter username and password!", Toast.LENGTH_LONG).show();
         			}
@@ -48,8 +49,9 @@ public class Login extends Activity {
         			// log in without saving passing
         			// if successful intent to move to main activity
         			// if not toast error
-        			Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        			startActivity(i);
+//        			Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//        			startActivity(i);
+        			finish();
         		}
             }
         });
@@ -61,5 +63,6 @@ public class Login extends Activity {
 		getMenuInflater().inflate(R.menu.activity_login, menu);
 		return true;
 	}
+
 
 }

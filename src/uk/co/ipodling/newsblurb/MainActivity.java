@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 			Intent i = new Intent(getApplicationContext(), Login.class);
 			startActivity(i);
 			// intent, move to log in activity
-		}
+		} 
 		setContentView(R.layout.activity_main);
 //		findViewById(R.layout.activity_main).setOnTouchListener;
 //		findViewById(R.layout.activity_main).setOnTouchListener(new MyTouchListener());
