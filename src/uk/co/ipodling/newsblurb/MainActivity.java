@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 //fling to open/close sidebar
 
 public class MainActivity extends Activity implements Sidebar.Listener{
+    private NewsblurbPreferences newsblurbPreferences;
 	private int distance = 100;
 	private int velocity = 150;
 	protected ListView sidebarList;
@@ -40,8 +41,14 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
+		if(newsblurbPreferences.contains("user") && newsblurbPreferences.contains("pass")){
+			// log in with saved preferences
+		} else {
+			// intent, move to log in activity
+		}
 		setContentView(R.layout.activity_main);
 //		findViewById(R.layout.activity_main).setOnTouchListener;
 //		findViewById(R.layout.activity_main).setOnTouchListener(new MyTouchListener());

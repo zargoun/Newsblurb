@@ -45,5 +45,13 @@ public class NewsblurbPreferences {
 		newsblurbEditor.putString("pass", pass);
         newsblurbEditor.commit();
 	}
+	
+	public boolean contains(String s){
+		boolean isItThere = false;
+		if(newsblurbPreferences.contains(s)){
+			isItThere = true;
+		}
+		return isItThere;
+	}
 
 }
