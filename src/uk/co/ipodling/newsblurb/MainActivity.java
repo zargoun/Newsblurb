@@ -6,6 +6,7 @@ package uk.co.ipodling.newsblurb;
  * */
 
 import java.io.IOException;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.ClipData;
@@ -42,11 +43,13 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE); //kinda not good way to do it if it takes a second to load but gets the job done
 		super.onCreate(savedInstanceState);
 		if(newsblurbPreferences.contains("user") && newsblurbPreferences.contains("pass")){
 			// log in with saved preferences
 		} else {
+			Intent i = new Intent(getApplicationContext(), Login.class);
+			startActivity(i);
 			// intent, move to log in activity
 		}
 		setContentView(R.layout.activity_main);
