@@ -28,8 +28,8 @@ public class Networking {
 	        String postURL = "http://www.newsblur.com/api/login";
 	        HttpPost post = new HttpPost(postURL); 
 	            List<NameValuePair> params = new ArrayList<NameValuePair>();
-	            params.add(new BasicNameValuePair("user", user));
-	            params.add(new BasicNameValuePair("pass", pass));
+	            params.add(new BasicNameValuePair("username", user));
+	            params.add(new BasicNameValuePair("password", pass));
 	            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params,HTTP.UTF_8);
 	            post.setEntity(ent);
 	            HttpResponse responsePOST = client.execute(post);  
