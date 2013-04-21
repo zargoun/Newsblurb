@@ -2,7 +2,9 @@ package uk.co.ipodling.newsblurb;
 /* 
  * application originally being developed for university. A reader application
  * for the news reader 'newsblur' which is open source
- * 
+ * test account for testing
+ * user: paptestaccount
+ * password: soyoucanseethisworks
  * */
 
 import java.io.IOException;
