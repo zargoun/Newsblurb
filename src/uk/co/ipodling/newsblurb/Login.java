@@ -1,18 +1,6 @@
 package uk.co.ipodling.newsblurb;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
+import java.io.IOException;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -32,6 +20,7 @@ public class Login extends Activity {
     EditText userText;
     EditText passText;
     private NewsblurbPreferences newsblurbPreferences;
+    Networking networking;
 
 
 	@Override
@@ -43,6 +32,7 @@ public class Login extends Activity {
 		userText = (EditText)findViewById(R.id.editText1);
 		passText = (EditText)findViewById(R.id.editText2);
         newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
+        networking = new Networking();
         Button button = (Button) findViewById(R.id.button1);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,50 +45,28 @@ public class Login extends Activity {
         			if (checkBox.isChecked()){
         				newsblurbPreferences.setUser(userText.getText().toString());
         				newsblurbPreferences.setPass(passText.getText().toString());
-        				try {
-        			        HttpClient client = new DefaultHttpClient();  
-        			        String postURL = "http://www.newsblur.com/api";
-        			        HttpPost post = new HttpPost(postURL); 
-        			            List<NameValuePair> params = new ArrayList<NameValuePair>();
-        			            params.add(new BasicNameValuePair("user", userText.getText().toString()));
-        			            params.add(new BasicNameValuePair("pass", passText.getText().toString()));
-        			            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params,HTTP.UTF_8);
-        			            post.setEntity(ent);
-        			            HttpResponse responsePOST = client.execute(post);  
-        			            HttpEntity resEntity = responsePOST.getEntity();  
-        			            if (resEntity != null) {    
-        			                Log.i("RESPONSE",EntityUtils.toString(resEntity));
-        	        				finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
-        			            }
-        			    } catch (Exception e) {
-        			        e.printStackTrace();
-        			    }
+        				new Thread(new Runnable(){     //for message sending
+                			@Override
+                			public void run(){
+                	        		networking.login(userText.getText().toString(), passText.getText().toString());
+                				}
+                			}).start(); //
         				// log into newsblur
         				// if successful intent to move to main activity
         				// if not toast error
+        				finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
             			} else {
         				// log in without saving passing
         				// if successful intent to move to main activity
         				// if not toast error
-            				try {
-        			        HttpClient client = new DefaultHttpClient();  
-        			        String postURL = "http://www.newsblur.com/api";
-        			        HttpPost post = new HttpPost(postURL); 
-        			            List<NameValuePair> params = new ArrayList<NameValuePair>();
-        			            params.add(new BasicNameValuePair("user", userText.getText().toString()));
-        			            params.add(new BasicNameValuePair("pass", passText.getText().toString()));
-        			            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params,HTTP.UTF_8);
-        			            post.setEntity(ent);
-        			            HttpResponse responsePOST = client.execute(post);  
-        			            HttpEntity resEntity = responsePOST.getEntity();  
-        			            if (resEntity != null) {    
-        			                Log.i("RESPONSE",EntityUtils.toString(resEntity));
-        	        				finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
-        			            }
-        			    } catch (Exception e) {
-        			        e.printStackTrace();
-        			    }        			
-            		}
+            				new Thread(new Runnable(){     //for message sending
+                    			@Override
+                    			public void run(){
+                    	        		networking.login(userText.getText().toString(), passText.getText().toString());
+                    				}
+                    			}).start();
+        				finish();
+        			}
         		}
             }
         });
