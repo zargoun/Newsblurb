@@ -17,7 +17,7 @@ public class NewsblurbPreferences {
 	public NewsblurbPreferences(Context context) {
 		this.newsblurbPreferences = context.getSharedPreferences(prefsPlace, Activity.MODE_PRIVATE);
         this.newsblurbEditor = newsblurbPreferences.edit();
-        newsblurbEditor.clear(); //clear so as if first time run
+        newsblurbEditor.clear(); //clear so as if first time run, just for testing!
         newsblurbEditor.commit();
 	}//
 //

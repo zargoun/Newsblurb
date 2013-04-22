@@ -1,11 +1,13 @@
 package uk.co.ipodling.newsblurb;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
@@ -24,6 +26,7 @@ public class Login extends Activity {
     EditText passText;
     private NewsblurbPreferences newsblurbPreferences;
     ParseTheJSON parser;
+    boolean loggedin = false;
 
 
 	@Override
@@ -40,6 +43,7 @@ public class Login extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
 			public void onClick(View v) {
+            	final CountDownLatch latch = new CountDownLatch(1); // wait for 2 threads;
             	final String user = userText.getText().toString();
         		final String pass = passText.getText().toString();
         		if(user.matches("")){
@@ -53,28 +57,57 @@ public class Login extends Activity {
                 			public void run(){
                 				JSONObject response = parser.gettheJSONLogin(user,  pass);
             	                Log.i("object contains: ",response.toString());
-                	        		Log.d("JSON: ", response.toString());
-                	        		Log.d("JSON: ", response.toString());
+                	        		 try {
+ 										if(response.getBoolean("authenticated") == true){
+ 											Log.d("got it!", "i got it!");
+ 											loggedin = true;
+ 											latch.countDown();
+ 										}else if (response.getBoolean("authenticated") == false){
+ 											loggedin = false;
+ 		                    				latch.countDown();
+ 		                				}
+ 									} catch (JSONException e) {
+ 										e.printStackTrace();
+ 										latch.countDown();
+ 									}
                 				}
                 			}).start(); //
-        				// log into newsblur
-        				// if successful intent to move to main activity
-        				// if not toast error
-        				finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
+
             			} else {
-        				// log in without saving passing
-        				// if successful intent to move to main activity
-        				// if not toast error
             				new Thread(new Runnable(){     //for message sending
                     			@Override
                     			public void run(){
                     				JSONObject response = parser.gettheJSONLogin(user,  pass);
                 	                Log.i("object contains: ",response.toString());
+                    	        		 try {
+     										if(response.getBoolean("authenticated") == true){
+     											Log.d("got it!", "i got it!");
+     											loggedin = true;
+     											latch.countDown();
+     										}else if (response.getBoolean("authenticated") == false){
+     											loggedin = false;
+     		                    				latch.countDown();
+     		                				}
+     									} catch (JSONException e) {
+    		                    				Toast.makeText(Login.this, "Error, please try again!", Toast.LENGTH_LONG).show();
+     										e.printStackTrace();
+     										latch.countDown();
+     									}
                     				}
                     			}).start();
-        				finish();
         			}
+        		}//
+        		try {
+					latch.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+        		if (loggedin == true){
+ 				finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
+        		}else{
+     				Toast.makeText(Login.this, "Error, please try again!", Toast.LENGTH_LONG).show();
         		}
+        		//do stuff for finish
             }
         });
 	}
