@@ -8,7 +8,9 @@ package uk.co.ipodling.newsblurb;
  * */
 
 import java.io.IOException;
+import java.net.CookieHandler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.webkit.CookieManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -53,6 +56,13 @@ public class MainActivity extends Activity implements Sidebar.Listener{
         newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
 		super.onCreate(savedInstanceState);
 		if(newsblurbPreferences.contains("user") && newsblurbPreferences.contains("pass")){
+			new Thread(new Runnable(){     //for message sending
+    			@Override
+    			public void run(){
+    				JSONObject response = parser.gettheJSONLogin(newsblurbPreferences.getUser(),  newsblurbPreferences.getPass());
+	                Log.i("object contains: ",response.toString());
+    				}
+    			}).start(); //
 			// log in with saved preferences
 		} else {
 			Intent i = new Intent(getApplicationContext(), Login.class);
@@ -96,7 +106,7 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 		 			@Override
 		 			public void run(){
 		 		sidebarFeed = parser.getSidebarFeed();
-		         Log.i("object for sidebar contains: ",sidebarFeed.toString());
+//		         Log.i("object for sidebar contains: ",sidebarFeed.toString());
 		 			}
 		 		}).start();
 		     }

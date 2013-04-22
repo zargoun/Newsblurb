@@ -17,12 +17,12 @@ public class NewsblurbPreferences {
 	public NewsblurbPreferences(Context context) {
 		this.newsblurbPreferences = context.getSharedPreferences(prefsPlace, Activity.MODE_PRIVATE);
         this.newsblurbEditor = newsblurbPreferences.edit();
-        newsblurbEditor.clear(); //clear so as if first time run, just for testing!
-        newsblurbEditor.commit();
+//        newsblurbEditor.clear(); //clear so as if first time run, just for testing!
+//        newsblurbEditor.commit();
 	}//
 //
 	public String getUser(){
-		String user = null;
+		String user = null;//
 		if (newsblurbPreferences.contains("user")){
 		user = newsblurbPreferences.getString("user", "");
 		} //
