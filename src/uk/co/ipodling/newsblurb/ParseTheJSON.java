@@ -12,6 +12,7 @@ import java.net.CookieStore;
 import java.util.ArrayList;
 import java.util.List;
  
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -20,12 +21,14 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
  
@@ -58,9 +61,21 @@ public class ParseTheJSON {
             post.setEntity(ent);
             HttpResponse resEntity = httpClient.execute(post);
             HttpEntity httpEntity = resEntity.getEntity();
+     
+           
             input = httpEntity.getContent(); 
-            Log.i("RESPONSE",input.toString()); //content can only be consumed once apparently
- 
+      //      Log.i("RESPONSE",input.toString()); //content can only be consumed once apparently
+    		//mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore); //i never thought i would hate cookies
+    		List<Cookie> cookies = httpClient.getCookieStore().getCookies();
+            if (cookies.isEmpty()) {
+            	 //Log.e("RESPONSEHEADER","nothing here brah");
+            } else {
+            	mCookieStore.addCookie(cookies.get(0));
+            	Log.i("cookieCount",Integer.toString(cookies.size()));
+                for (int i = 0; i < cookies.size(); i++) {
+                   Log.e("responseHeader",cookies.get(i).toString());
+                }
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -93,18 +108,34 @@ public class ParseTheJSON {
  
     }
 	
-	public JSONObject getSidebarFeed(){
+	public String[] getSidebarFeed(){
+		String[] returnString = null;
+
 		JSONObject forSidebar = null;
 		mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore); //i never thought i would hate cookies
 		  try {
 	            DefaultHttpClient httpClient = new DefaultHttpClient();
-		        String getURL = "http://www.newsblur.com/api/reader/feeds";
+	            httpClient.setCookieStore(mCookieStore);
+		        String getURL = "http://www.newsblur.com/reader/feeds";
 	            HttpGet get = new HttpGet(getURL);
 	            HttpResponse resEntity = httpClient.execute(get);
-	            HttpEntity httpEntity = resEntity.getEntity();
-	            input = httpEntity.getContent(); 
+	            //HttpEntity httpEntity = resEntity.getEntity();
+	            InputStream is = resEntity.getEntity().getContent();
+	            Header[] s = resEntity.getHeaders("newsblur_sessionid"); //searching for the evasive cookie
+	            //Header t = resEntity.getHeaders("newsblur_sessionid");
+	           // mCookieStore.add();
+	            Log.d("Header:", is.toString());
+	            input = is; 
 	            Log.i("RESPONSE",input.toString()); //content can only be consumed once apparently
-	 
+	            mHttpContext.setAttribute(ClientContext.COOKIE_STORE, mCookieStore); //yes this is copy pasted all over, no idea what it does, kind of hoped it would result in a cookie
+	    		List<Cookie> cookies = httpClient.getCookieStore().getCookies();
+	            if (cookies.isEmpty()) {
+	                System.out.println("None");
+	            } else {
+	                for (int i = 0; i < cookies.size(); i++) {
+	                    System.out.println("- " + cookies.get(i).toString());
+	                }
+	            }
 	        } catch (UnsupportedEncodingException e) {
 	            e.printStackTrace();
 	        } catch (ClientProtocolException e) {
@@ -130,11 +161,30 @@ public class ParseTheJSON {
 	        try {// makeJSON Object from input string (hopefully)
 	        	Log.d("String = ", stringey);
 	            forSidebar = new JSONObject(stringey);
+	            JSONArray thing = null;
+	    		try {
+	    			
+	    			thing = forSidebar.getJSONArray("folders");
+	    			String[] stringList = new String[thing.length()];
+	    	for(int i = 0; i < thing.length(); i++){//
+	    			
+	    			thing.get(i);
+	    			String thing3 = forSidebar.getJSONObject("feeds").getJSONObject(Integer.toString(thing.getInt(i))).getString("feed_title");
+	    			stringList[i]=thing3;
+	    			Log.d("TESTING",thing3);
+	    	}
+	    	returnString = stringList;
+	    	
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			Log.d("thingError",e.toString());
+	    		}
 	        } catch (JSONException e) {
 	            Log.e("JSON Parser", "Error parsing: " + e.toString());
 	        }
+	        
 	 
-	        return forSidebar; // return JSON object
+	        return returnString; // return JSON object
 	}
 
 }

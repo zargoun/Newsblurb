@@ -10,6 +10,7 @@ package uk.co.ipodling.newsblurb;
 import java.io.IOException;
 import java.net.CookieHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +29,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.webkit.CookieManager;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
@@ -46,8 +48,8 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 	private int velocity = 150;
 	protected ListView sidebarList;
 	protected Sidebar sidebar;
-	JSONObject sidebarFeed;
-    protected String[] mStrings = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+	//JSONObject sidebarFeed;
+    protected String[] mStrings = {};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +58,15 @@ public class MainActivity extends Activity implements Sidebar.Listener{
         newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
 		super.onCreate(savedInstanceState);
 		if(newsblurbPreferences.contains("user") && newsblurbPreferences.contains("pass")){
+			
 			new Thread(new Runnable(){     //for message sending
     			@Override
     			public void run(){
     				JSONObject response = parser.gettheJSONLogin(newsblurbPreferences.getUser(),  newsblurbPreferences.getPass());
 	                Log.i("object contains: ",response.toString());
+			 		mStrings = parser.getSidebarFeed();
+			 		Log.e("array contains",mStrings[0].toString());
+			 	//adapter.notifyDataSetChanged();
     				}
     			}).start(); //
 			// log in with saved preferences
@@ -72,6 +78,7 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 		setContentView(R.layout.activity_main);
 //		findViewById(R.layout.activity_main).setOnTouchListener;
 //		findViewById(R.layout.activity_main).setOnTouchListener(new MyTouchListener());
+//		Log.d("thingError",sidebarFeed.toString());
 		sidebar = (Sidebar) findViewById(R.id.animation_layout);
         sidebar.setListener(this);
         sidebarList   = (ListView) findViewById(R.id.sidebar_list);
@@ -105,8 +112,8 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 		         new Thread(new Runnable(){     //for message sending
 		 			@Override
 		 			public void run(){
-		 		sidebarFeed = parser.getSidebarFeed();
-//		         Log.i("object for sidebar contains: ",sidebarFeed.toString());
+		 		mStrings = parser.getSidebarFeed();
+		         Log.i("object for sidebar contains: ","TESTINGSTUFF");
 		 			}
 		 		}).start();
 		     }
