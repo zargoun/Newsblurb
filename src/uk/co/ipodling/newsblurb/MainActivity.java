@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 
 public class MainActivity extends Activity implements Sidebar.Listener{
     private NewsblurbPreferences newsblurbPreferences;
+    ParseTheJSON parser;
 	private int distance = 100;
 	private int velocity = 150;
 	protected ListView sidebarList;

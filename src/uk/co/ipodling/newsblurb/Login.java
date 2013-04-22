@@ -2,6 +2,7 @@ package uk.co.ipodling.newsblurb;
 
 import java.io.IOException;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
@@ -22,7 +23,6 @@ public class Login extends Activity {
     EditText userText;
     EditText passText;
     private NewsblurbPreferences newsblurbPreferences;
-    Networking networking;
     ParseTheJSON parser;
 
 
@@ -35,7 +35,6 @@ public class Login extends Activity {
 		userText = (EditText)findViewById(R.id.editText1);
 		passText = (EditText)findViewById(R.id.editText2);
         newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
-        networking = new Networking();
         parser = new ParseTheJSON();
         Button button = (Button) findViewById(R.id.button1);
         button.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +52,9 @@ public class Login extends Activity {
                 			@Override
                 			public void run(){
                 				JSONObject response = parser.gettheJSONLogin(user,  pass);
-                	        		networking.login(userText.getText().toString(), passText.getText().toString());
+            	                Log.i("object contains: ",response.toString());
+                	        		Log.d("JSON: ", response.toString());
+                	        		Log.d("JSON: ", response.toString());
                 				}
                 			}).start(); //
         				// log into newsblur
@@ -68,7 +69,7 @@ public class Login extends Activity {
                     			@Override
                     			public void run(){
                     				JSONObject response = parser.gettheJSONLogin(user,  pass);
-                    	        		networking.login(userText.getText().toString(), passText.getText().toString());
+                	                Log.i("object contains: ",response.toString());
                     				}
                     			}).start();
         				finish();

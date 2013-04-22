@@ -48,8 +48,8 @@ public class ParseTheJSON {
             post.setEntity(ent);
             HttpResponse resEntity = httpClient.execute(post);
             HttpEntity httpEntity = resEntity.getEntity();
-            Log.i("RESPONSE",EntityUtils.toString(httpEntity));
-            input = httpEntity.getContent();           
+            input = httpEntity.getContent(); 
+            Log.i("RESPONSE",input.toString()); //content can only be consumed once apparently
  
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
