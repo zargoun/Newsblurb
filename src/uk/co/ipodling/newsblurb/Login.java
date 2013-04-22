@@ -2,6 +2,8 @@ package uk.co.ipodling.newsblurb;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -14,13 +16,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
+// must authenticate before you can make calls to endpoints
 public class Login extends Activity {
     CheckBox checkBox;
     EditText userText;
     EditText passText;
     private NewsblurbPreferences newsblurbPreferences;
     Networking networking;
+    ParseTheJSON parser;
 
 
 	@Override
@@ -33,13 +36,14 @@ public class Login extends Activity {
 		passText = (EditText)findViewById(R.id.editText2);
         newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
         networking = new Networking();
+        parser = new ParseTheJSON();
         Button button = (Button) findViewById(R.id.button1);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
 			public void onClick(View v) {
-            	String user = userText.getText().toString();
-        		String pass = passText.getText().toString();
-        		if(user.matches("") || pass.matches("")){
+            	final String user = userText.getText().toString();
+        		final String pass = passText.getText().toString();
+        		if(user.matches("")){
     				Toast.makeText(Login.this, "Please enter username and password!", Toast.LENGTH_LONG).show();
         		} else {
         			if (checkBox.isChecked()){
@@ -48,6 +52,7 @@ public class Login extends Activity {
         				new Thread(new Runnable(){     //for message sending
                 			@Override
                 			public void run(){
+                				JSONObject response = parser.gettheJSONLogin(user,  pass);
                 	        		networking.login(userText.getText().toString(), passText.getText().toString());
                 				}
                 			}).start(); //
@@ -62,6 +67,7 @@ public class Login extends Activity {
             				new Thread(new Runnable(){     //for message sending
                     			@Override
                     			public void run(){
+                    				JSONObject response = parser.gettheJSONLogin(user,  pass);
                     	        		networking.login(userText.getText().toString(), passText.getText().toString());
                     				}
                     			}).start();
