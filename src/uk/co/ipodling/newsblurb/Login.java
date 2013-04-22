@@ -1,5 +1,7 @@
 package uk.co.ipodling.newsblurb;
-
+/*
+ * Not perfect, throws some errors, but seems to work itself out at the end of the day, one handler error is concerning but executes as expected on my phone
+ * */
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
@@ -43,7 +45,7 @@ public class Login extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
 			public void onClick(View v) {
-            	final CountDownLatch latch = new CountDownLatch(1); // wait for 2 threads;
+            	final CountDownLatch latch = new CountDownLatch(1); // wait for thread
             	final String user = userText.getText().toString();
         		final String pass = passText.getText().toString();
         		if(user.matches("")){
@@ -61,7 +63,7 @@ public class Login extends Activity {
  										if(response.getBoolean("authenticated") == true){
  											Log.d("got it!", "i got it!");
  											loggedin = true;
- 											latch.countDown();
+ 											latch.countDown(); //indicates thread has ended
  										}else if (response.getBoolean("authenticated") == false){
  											loggedin = false;
  		                    				latch.countDown();
@@ -98,11 +100,14 @@ public class Login extends Activity {
         			}
         		}//
         		try {
-					latch.await();
+					latch.await(); //waits for http post response to finish, should probably put a timeout on it really
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
         		if (loggedin == true){
+        	        Intent returnIntent = new Intent();
+        	        returnIntent.putExtra("result", true);
+        	        setResult(RESULT_OK,returnIntent);     
  				finish(); //herp derp, finish not intent because i don't want a new instance *headdesk*
         		}else{
      				Toast.makeText(Login.this, "Error, please try again!", Toast.LENGTH_LONG).show();
@@ -110,6 +115,7 @@ public class Login extends Activity {
         		//do stuff for finish
             }
         });
+
 	}
 
 	@Override

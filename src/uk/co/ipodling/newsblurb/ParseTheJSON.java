@@ -16,6 +16,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -82,5 +83,48 @@ public class ParseTheJSON {
         return theObject; // return JSON object
  
     }
+	
+	public JSONObject getSidebarFeed(){
+		JSONObject forSidebar = null;
+		  try {
+	            DefaultHttpClient httpClient = new DefaultHttpClient();
+		        String getURL = "http://www.newsblur.com/api/reader/feeds";
+	            HttpGet get = new HttpGet(getURL);
+	            HttpResponse resEntity = httpClient.execute(get);
+	            HttpEntity httpEntity = resEntity.getEntity();
+	            input = httpEntity.getContent(); 
+	            Log.i("RESPONSE",input.toString()); //content can only be consumed once apparently
+	 
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+	        } catch (ClientProtocolException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	 
+	        try {
+	            BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    input, "iso-8859-1"), 8);
+	            StringBuilder sb = new StringBuilder();
+	            String line = null;
+	            while ((line = reader.readLine()) != null) {
+	                sb.append(line + "\n");
+	            }
+	            input.close();
+	            stringey = sb.toString();
+	        } catch (Exception e) {
+	            Log.e("Buffer Error", "Error converting: " + e.toString());
+	        }
+	 
+	        try {// makeJSON Object from input string (hopefully)
+	        	Log.d("String = ", stringey);
+	            forSidebar = new JSONObject(stringey);
+	        } catch (JSONException e) {
+	            Log.e("JSON Parser", "Error parsing: " + e.toString());
+	        }
+	 
+	        return forSidebar; // return JSON object
+	}
 
 }

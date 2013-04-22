@@ -9,6 +9,8 @@ package uk.co.ipodling.newsblurb;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.ClipData;
@@ -41,18 +43,20 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 	private int velocity = 150;
 	protected ListView sidebarList;
 	protected Sidebar sidebar;
+	JSONObject sidebarFeed;
     protected String[] mStrings = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-        newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //kinda not good way to do it if it takes a second to load but gets the job done
+		parser = new ParseTheJSON();
+        newsblurbPreferences = new NewsblurbPreferences(getApplicationContext());
 		super.onCreate(savedInstanceState);
 		if(newsblurbPreferences.contains("user") && newsblurbPreferences.contains("pass")){
 			// log in with saved preferences
 		} else {
 			Intent i = new Intent(getApplicationContext(), Login.class);
-			startActivity(i);
+			startActivityForResult(i, 0);
 			// intent, move to log in activity
 		} 
 		setContentView(R.layout.activity_main);
@@ -80,6 +84,27 @@ public class MainActivity extends Activity implements Sidebar.Listener{
 	            finish();
 	        }
 	    }
+	 
+	 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		  if (requestCode == 0) {
+
+		     if(resultCode == RESULT_OK){      
+		         String result=data.getStringExtra("result");
+		         Log.d("LOOK HERE", "Executing sidebar GET");
+		         new Thread(new Runnable(){     //for message sending
+		 			@Override
+		 			public void run(){
+		 		sidebarFeed = parser.getSidebarFeed();
+		         Log.i("object for sidebar contains: ",sidebarFeed.toString());
+		 			}
+		 		}).start();
+		     }
+		     if (resultCode == RESULT_CANCELED) {    
+		         //Write your code if there's no result
+		     }
+		  }
+		}
 
 
 	@Override
